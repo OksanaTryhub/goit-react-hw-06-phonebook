@@ -1,27 +1,26 @@
-import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact, deleteContact, setFilter } from 'components/redux/actions';
+import {
+  getAllContacts,
+  getFilter,
+  getFilteredContacts,
+} from 'components/redux/selectors';
+
 import Form from './components/Form/Form';
 import ContactList from 'components/ContactList/ContactList';
 import Filter from './components/Filter/Filter';
 import warningMessage from './utils/warningMessage';
-import useLocalStorage from 'hooks/useLocalStorage';
-
-import shortid from 'shortid';
+// import useLocalStorage from 'hooks/useLocalStorage';
 
 import css from './App.module.css';
 
 export default function App() {
-  const [contacts, setContacts] = useLocalStorage('contacts', []);
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(getAllContacts);
 
-  //----- Replaced with custom hook useLocalStorage -----
-  // const [contacts, setContacts] = useState(() => {
-  //   const contacts = JSON.parse(localStorage.getItem('contacts'));
-  //   return contacts ? contacts : [];
-  // });
+  const filter = useSelector(getFilter);
+  const filteredContacts = useSelector(getFilteredContacts);
 
-  // useEffect(() => {
-  //   localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
+  const dispatch = useDispatch();
 
   const isDublicate = name => {
     const normalizedNewContactName = name.toLocaleLowerCase();
@@ -33,47 +32,33 @@ export default function App() {
     return Boolean(result);
   };
 
-  const addContact = ({ name, number }) => {
+  const handleAddContact = ({ name, number }) => {
     if (isDublicate(name)) {
       warningMessage(name);
       return;
     }
-
-    setContacts(prevContacts => {
-      const newContact = {
-        id: shortid.generate(),
-        name: name,
-        number: number,
-      };
-      return [newContact, ...prevContacts];
-    });
+    const action = addContact({ name, number });
+    dispatch(action);
   };
 
   const cangeFilter = e => {
-    setFilter(e.currentTarget.value);
+    dispatch(setFilter(e.currentTarget.value));
   };
 
-  const normalizedFilter = filter.toLocaleLowerCase();
-  const filteredContactList = contacts.filter(contact =>
-    contact.name.toLocaleLowerCase().includes(normalizedFilter)
-  );
-
-  const deleteContact = contactId => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== contactId)
-    );
+  const handleDeleteContact = contactId => {
+    const action = deleteContact(contactId);
+    dispatch(action);
   };
 
   return (
     <div className={css.phonebook}>
       <h1 className={css.phonebook__title}> Phonebook</h1>
-      <Form onSubmit={addContact} />
-
+      <Form onSubmit={handleAddContact} />
       <h2 className={css.phonebook__subtitle}>Contacts</h2>
       <Filter value={filter} onChange={cangeFilter} />
       <ContactList
-        contacts={filteredContactList}
-        onDeleteContact={deleteContact}
+        contacts={filteredContacts}
+        onDeleteContact={handleDeleteContact}
       />
     </div>
   );

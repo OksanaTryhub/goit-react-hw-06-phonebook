@@ -10,6 +10,7 @@ const Filter = ({ value, onChange }) => (
       className={css.filter__input}
       type="text"
       value={value}
+      placeholder={'Enter name'}
       onChange={onChange}
     ></input>
   </label>
