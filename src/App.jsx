@@ -1,10 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { addContact, deleteContact, setFilter } from 'components/redux/actions';
 import {
-  getAllContacts,
+  addContact,
+  deleteContact,
+} from 'components/redux/contacts/contacts-actions';
+import { setFilter } from 'components/redux/filter/filter-actions';
+import { getAllContacts } from 'components/redux/contacts/contacts-selectors';
+import {
   getFilter,
   getFilteredContacts,
-} from 'components/redux/selectors';
+} from 'components/redux/filter/filter-selectors.js';
 
 import Form from './components/Form/Form';
 import ContactList from 'components/ContactList/ContactList';
