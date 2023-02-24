@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   addContact,
   deleteContact,
-} from 'components/redux/contacts/contacts-actions';
-import { setFilter } from 'components/redux/filter/filter-actions';
+} from 'components/redux/contacts/contacts-slice';
+import { setFilter } from 'components/redux/filter/filter-slice';
 import { getAllContacts } from 'components/redux/contacts/contacts-selectors';
 import {
   getFilter,
