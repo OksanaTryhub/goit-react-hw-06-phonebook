@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
+
 import {
   addContact,
   deleteContact,
@@ -14,7 +15,6 @@ import Form from './components/Form/Form';
 import ContactList from 'components/ContactList/ContactList';
 import Filter from './components/Filter/Filter';
 import warningMessage from './utils/warningMessage';
-// import useLocalStorage from 'hooks/useLocalStorage';
 
 import css from './App.module.css';
 
