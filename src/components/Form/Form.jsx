@@ -1,11 +1,20 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { addContact } from 'components/redux/contacts/contacts-slice';
+import { getAllContacts } from './../redux/contacts/contacts-selectors';
+
+import warningMessage from 'utils/warningMessage';
 import css from './Form.module.css';
 
 export default function Form({ onSubmit }) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const [warning, setWarning] = useState(false);
+
+  const contacts = useSelector(getAllContacts);
+
+  const dispatch = useDispatch();
 
   const handleInputCange = e => {
     const { name, value } = e.currentTarget;
@@ -29,11 +38,34 @@ export default function Form({ onSubmit }) {
     setNumber('');
   };
 
+  const isDublicate = name => {
+    const normalizedNewContactName = name.toLocaleLowerCase();
+
+    const result = contacts.find(({ name }) => {
+      return name.toLocaleLowerCase() === normalizedNewContactName;
+    });
+
+    return Boolean(result);
+  };
+
+  const handleAddContact = ({ name, number }) => {
+    if (isDublicate(name)) {
+      setWarning(true);
+      warningMessage(name);
+
+      return;
+    }
+    const action = addContact({ name, number });
+    dispatch(action);
+    setWarning(false);
+    resetForm();
+    console.log(warning);
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
 
-    onSubmit({ name, number });
-    resetForm();
+    onSubmit = handleAddContact({ name, number });
   };
 
   return (
@@ -72,7 +104,3 @@ export default function Form({ onSubmit }) {
     </form>
   );
 }
-
-Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};

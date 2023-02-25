@@ -1,37 +1,35 @@
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { getFilteredContacts } from 'components/redux/filter/filter-selectors';
+
+import { deleteContact } from 'components/redux/contacts/contacts-slice';
+
 import SvgIcon from '../SvgIcon/SvgIcon';
 import css from './ContactList.module.css';
 
-const ContactList = ({ contacts, onDeleteContact }) => (
-  <ul className={css.contactList}>
-    {contacts.map(({ id, name, number }) => (
-      <li key={id} className={css.contactList__item}>
-        <p className={css.contactList__name}>{name}: </p>
-        <p className={css.contactList__number}>{number}</p>
-        <button
-          className={css.contactList__deleteBtn}
-          onClick={() => onDeleteContact(id)}
-        >
-          <SvgIcon id="svg" />
-        </button>
-      </li>
-    ))}
-  </ul>
-);
+export default function ContactList({ contacts, onDeleteContact }) {
+  const filteredContacts = useSelector(getFilteredContacts);
 
-export default ContactList;
+  const dispatch = useDispatch();
 
-ContactList.defaultProps = {
-  contacts: [],
-};
+  const handleDeleteContact = contactId => {
+    const action = deleteContact(contactId);
+    dispatch(action);
+  };
 
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-  onDeleteContact: PropTypes.func.isRequired,
-};
+  return (
+    <ul className={css.contactList}>
+      {filteredContacts.map(({ id, name, number }) => (
+        <li key={id} className={css.contactList__item}>
+          <p className={css.contactList__name}>{name}: </p>
+          <p className={css.contactList__number}>{number}</p>
+          <button
+            className={css.contactList__deleteBtn}
+            onClick={() => handleDeleteContact(id)}
+          >
+            <SvgIcon id="svg" />
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
