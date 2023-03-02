@@ -1,1 +1,1 @@
-React Homework module 4 - React hooks - Phonebook
+React Homework module 6 - Redux fundamentals. Redux Toolkit. React Redux hooks - Phonebook
